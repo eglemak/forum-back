@@ -24,27 +24,18 @@ module.exports.DELETE_ANSWER = async (req, res) => {
   res.status(200).json({ response: "Answer was deleted" });
 };
 
+module.exports.GET_ANSWERS_BY_QUESTION_ID = async (req, res) => {
+  const aggregatedQuestionData = await questionModel.aggregate([
+    {
+      $lookup: {
+        from: "answers",
+        localField: "answersId",
+        foreignField: "id",
+        as: "question_answers",
+      },
+    },
+    { $match: { id: req.params.id } },
+  ]).exec();
 
-// module.exports.GET_SUMMARIES_BY_GROUP_ID = async (req, res) => {
-//   const aggregatedGroupData = await GroupModel.aggregate([
-//     {
-//       $lookup: {
-//         from: "summaries",
-//         localField: "summaryCardIds",
-//         foreignField: "id",
-//         as: "group_summaries",
-//       },
-//     },
-//     { $match: { id: req.params.groupId } },
-//   ]).exec();
-
-//   res.status(200).json({ response: aggregatedGroupData });
-// };
-
-// module.exports.GET_SUMMARY_CARD_BY_ID = async (req, res) => {
-//   const summary = await SummaryModel.find({ id: req.params.id });
-//   res.status(200).json({ response: summary });
-// };
-
-
-
+  res.status(200).json({ response: aggregatedQuestionData });
+};
