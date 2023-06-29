@@ -39,3 +39,21 @@ module.exports.GET_ANSWERS_BY_QUESTION_ID = async (req, res) => {
 
   res.status(200).json({ response: aggregatedQuestionData });
 };
+
+module.exports.UPDATE_LIKES = async (req, res) => {
+    console.log(req.params.answerId);
+    const answer = await answerModel.findOne({ id: req.params.answerId });
+    console.log(answer);
+    let oldLikes = 0;
+    if (answer.gainedLikes) {
+        oldLikes = answer.gainedLikes;
+    } 
+    const receivedLike = req.body.gainedLikes;
+    const newGainedLikes = oldLikes + receivedLike;
+    
+    await answerModel.updateOne(
+        { id: req.params.answerId },
+        { gainedLikes: newGainedLikes }
+    );
+    res.status(200).json({ response: "Answer was updated" });
+  };
