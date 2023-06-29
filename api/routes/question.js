@@ -2,16 +2,13 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth");
 const {
-//   INSERT_GROUP,
-//   GET_ALL_GROUPS,
-//   GET_GROUP_BY_ID,
-//   DELETE_GROUP_BY_ID,
-    INSERT_QUESTION
+    INSERT_QUESTION,
+    GET_ALL_QUESTIONS,
+    DELETE_QUESTION_BY_ID
 } = require("../controllers/question");
 
 router.post("/question", authMiddleware, INSERT_QUESTION);
-// // router.get("/groups", authMiddleware, GET_ALL_GROUPS);
-// router.get("/group/:id", authMiddleware, GET_GROUP_BY_ID);
-// router.delete("/group/:id", authMiddleware, DELETE_GROUP_BY_ID);
+router.get("/questions", GET_ALL_QUESTIONS);
+router.delete("/question/:id", authMiddleware, DELETE_QUESTION_BY_ID);
 
 module.exports = router;
