@@ -2,11 +2,20 @@ const uniqid = require("uniqid");
 const questionModel = require("../models/question");
 const userModel = require("../models/user");
 
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+
 module.exports.INSERT_QUESTION = async (req, res) => {
   try {
     const question = new questionModel({
       questionText: req.body.questionText,
-      creationDate: new Date(),
+      creationDate: formatDate(new Date()),
       answersId: [],
       id: uniqid(),
     });
@@ -33,6 +42,11 @@ module.exports.GET_ALL_QUESTIONS = async (req, res) => {
 
 module.exports.DELETE_QUESTION_BY_ID = async (req, res) => {
   const question = await questionModel.findOneAndDelete({ id: req.params.id });
+
+  // userModel.updateOne(
+  //   { id: req.body.userId },
+  //   { $pull: { questionsId: req.params.id } }
+  // ).exec();
 
   res
     .status(200)

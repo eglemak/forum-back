@@ -2,11 +2,20 @@ const answerModel = require("../models/answer");
 const questionModel = require("../models/question");
 const uniqid = require("uniqid");
 
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 module.exports.INSERT_ANSWER = async (req, res) => {
   const answer = new answerModel({
     id: uniqid(),
-    creationDate: new Date(),
+    creationDate: formatDate(new Date()),
     answerText: req.body.answerText,
+    gainedLikes: 0,
   });
 
   const savedAnswer = await answer.save();
@@ -20,7 +29,7 @@ module.exports.INSERT_ANSWER = async (req, res) => {
 };
 
 module.exports.DELETE_ANSWER = async (req, res) => {
-  await answerModel.deleteOne({ id: req.params.id });
+  await answerModel.deleteOne({ id: req.params.answerId });
   res.status(200).json({ response: "Answer was deleted" });
 };
 
@@ -37,7 +46,7 @@ module.exports.GET_ANSWERS_BY_QUESTION_ID = async (req, res) => {
     { $match: { id: req.params.id } },
   ]).exec();
 
-  res.status(200).json({ response: aggregatedQuestionData });
+  res.status(200).json({ response: aggregatedQuestionData[0] });
 };
 
 module.exports.UPDATE_LIKES = async (req, res) => {
