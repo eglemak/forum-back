@@ -29,8 +29,7 @@ module.exports.SIGN_UP = async (req, res) => {
         name: newName,
         email: req.body.email,
         password: hash,
-        bought_tickets: [],
-        money_balance: req.body.money_balance,
+        questionsId: [],
       });
   
       await user.save();
@@ -47,29 +46,14 @@ module.exports.SIGN_UP = async (req, res) => {
         }
       );
   
-      const refreshToken = jwt.sign(
-        {
-          email: user.email,
-          userId: user.id,
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "24h" },
-        {
-          algorithm: "RS256",
-        }
-      );
-  
-      return res.status(200).json({ response: "You signed up", jwt_token: token, refresh_token: refreshToken });
+      return res.status(200).json({ response: "You signed up", jwt_token: token});
   
     } catch (err) {
       res.status(500).json({ response: "User was not saved, please try later" });
     }
   };
   
-  
-  
-  
-  
+
   module.exports.LOGIN = async (req, res) => {
     try {
       const user = await UserModel.findOne({ email: req.body.email });
@@ -91,19 +75,8 @@ module.exports.SIGN_UP = async (req, res) => {
               algorithm: "RS256",
             }
           );
-          const refreshToken = jwt.sign(
-            {
-              email: user.email,
-              userId: user.id,
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "12h" },
-            {
-              algorithm: "RS256",
-            }
-          );
   
-          return res.status(200).json({ response: "You logged in", jwt: token, jwt_refresh: refreshToken });
+          return res.status(200).json({ response: "You logged in", jwt: token});
         } else {
           return res.status(404).json({ response: "Bad data" });
         }
