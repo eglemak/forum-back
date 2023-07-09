@@ -29,8 +29,15 @@ module.exports.INSERT_ANSWER = async (req, res) => {
 };
 
 module.exports.DELETE_ANSWER = async (req, res) => {
-  await answerModel.deleteOne({ id: req.params.answerId });
+  const { id, answerId } = req.params;
+  console.log("req.params", req.params);
+  await answerModel.deleteOne({ id: answerId });
   res.status(200).json({ response: "Answer was deleted" });
+
+  await questionModel.updateOne(
+    { id: id },
+    { $pull: { answersId: answerId } }
+  ).exec();
 };
 
 module.exports.GET_ANSWERS_BY_QUESTION_ID = async (req, res) => {
